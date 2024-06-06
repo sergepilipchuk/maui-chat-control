@@ -4,7 +4,7 @@
 
 # DevExpress Chat for .NET MAUI
 
-This example creates a Chart control that allows a user to send and receive massages.
+This example demonstrates a Chart control that allows users to send and receive massages.
 
 <img width="40%" alt="DevExpress Chat for .NET MAUI" src="Images/app-preview.png">
 
@@ -16,14 +16,53 @@ This example creates a Chart control that allows a user to send and receive mass
 * [DXCollectionView](https://docs.devexpress.com/MAUI/DevExpress.Maui.CollectionView.DXCollectionView): [GroupHeaderTemplate](https://docs.devexpress.com/MAUI/DevExpress.Maui.CollectionView.DXCollectionView.GroupHeaderTemplate), [AllowGroupCollapse](https://docs.devexpress.com/MAUI/DevExpress.Maui.CollectionView.DXCollectionView.AllowGroupCollapse), [ItemsSource](https://docs.devexpress.com/MAUI/DevExpress.Maui.CollectionView.DXCollectionView.ItemsSource), [ItemTemplate](https://docs.devexpress.com/MAUI/DevExpress.Maui.CollectionView.DXCollectionView.ItemTemplate)
 * [SafeKeyboardAreaView](https://docs.devexpress.com/MAUI/DevExpress.Maui.Core.SafeKeyboardAreaView)
 * [ChipGroup](https://docs.devexpress.com/MAUI/DevExpress.Maui.Editors.ChipGroup): [ChipTapCommand](https://docs.devexpress.com/MAUI/DevExpress.Maui.Editors.ChipGroup.ChipTapCommand), [ItemsSource](https://docs.devexpress.com/MAUI/DevExpress.Maui.Editors.ChipGroup.ItemsSource), [IsMultiline](https://docs.devexpress.com/MAUI/DevExpress.Maui.Editors.ChipGroup.IsMultiline), [DisplayMember](https://docs.devexpress.com/MAUI/DevExpress.Maui.Editors.ChipGroup.DisplayMember)
-
 * [TextEdit](https://docs.devexpress.com/MAUI/DevExpress.Maui.Editors.TextEdit): [PlaceholderText](https://docs.devexpress.com/MAUI/DevExpress.Maui.Editors.EditBase.PlaceholderText), [Text](https://docs.devexpress.com/MAUI/DevExpress.Maui.Editors.TextEditBase.Text)
-
 * [DXButton](https://docs.devexpress.devx/MAUI/DevExpress.Maui.Core.DXButton): [Command](https://docs.devexpress.com/MAUI/DevExpress.Maui.Core.DXButtonBase.Command), [Icon](https://docs.devexpress.devx/MAUI/DevExpress.Maui.Core.DXContentPresenter.Icon)
 
 ## Implementation Details
 
-...
+1. Use the `DXCollectionView` control to display messages and group them by **DateRange**:
+
+    ```xaml
+    <dxcv:DXCollectionView ... 
+        x:Name="chatSurface">
+        <dxcv:DXCollectionView.GroupDescription>
+            <dxcv:GroupDescription ... 
+                GroupInterval="DateRange" />
+        </dxcv:DXCollectionView.GroupDescription>
+    </dxcv:DXCollectionView>
+    ```
+
+2. Call the [`DXCollectionView.ScrollTo()`](https://docs.devexpress.devx/MAUI/DevExpress.Maui.CollectionView.DXCollectionView.ScrollTo(System.Int32)) method to scroll the view to the last message:
+
+    ```csharp
+    public partial class MainPage : ContentPage {
+        // ...
+        void OnMessagesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            chatSurface.ScrollTo(chatSurface.GetItemHandle(vm.Messages.Count - 1));
+        }
+    }
+    ```
+    
+3. Use the [`ChipGroup`](https://docs.devexpress.devx/MAUI/DevExpress.Maui.Editors.ChipGroup) control to display short answers:
+
+    ```xaml
+    <dxe:ChipGroup ...      
+        DisplayMember="Text"
+        ItemsSource="{Binding SuggestedActions}" />
+    ```
+
+    ```csharp
+    public ChatViewModel() {
+        // ...
+        SuggestedActions = new ObservableCollection<SuggestedAction>() {
+            new SuggestedAction() { Message = new Message() { Sender = Me, SentAt = DateTime.Now, Text = "Sure" }, Text = "Sure" },
+            new SuggestedAction() { Message = new Message() { Sender = Me, SentAt = DateTime.Now, Text = "Great" }, Text = "Great" },
+            new SuggestedAction() { Message = new Message() { Sender = Me, SentAt = DateTime.Now, Text = "Thank you" }, Text = "Thank you" },
+            new SuggestedAction() { Message = new Message() { Sender = Me, SentAt = DateTime.Now, Text = "My pleasure" }, Text = "My pleasure" }
+        };
+    }
+    ```
 
 ## Files to Review
 
