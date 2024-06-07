@@ -22,7 +22,7 @@ namespace ChatApplication {
             Messages = new ObservableCollection<Message>() {
                 new Message() { Text = "Hi John", SentAt = DateTime.Now, Sender = Сompanion },
                 new Message() { Text = "I hope you are doing well!", SentAt = DateTime.Now.AddMinutes(5), Sender = Сompanion, IsLastMessage = true },
-                new Message() { Text = "Hi Dallas! I was just about to message you! I ran into Stephen earlies today.", SentAt = DateTime.Now.AddMinutes(10), Sender = Me, IsLastMessage = true },
+                new Message() { Text = "Hi Dallas! I was just about to text you! I ran into Stephen earlier today.", SentAt = DateTime.Now.AddMinutes(10), Sender = Me, IsLastMessage = true },
                 new Message() { Text = "What did he say? Did he mention the meeting tomorrow?", SentAt = DateTime.Now.AddMinutes(15), Sender = Сompanion, IsLastMessage = true },
                 new Message() { Text = "Yes, but he didn't mention specifics. Something about changing the venue for next Saturday.", SentAt = DateTime.Now.AddMinutes(18), Sender = Me },
                 new Message() { Text = "I suppose it wasn't available.", SentAt = DateTime.Now.AddMinutes(20), Sender = Me, IsLastMessage = true },
