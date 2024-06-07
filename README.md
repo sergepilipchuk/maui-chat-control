@@ -2,9 +2,9 @@
 [![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
 <!-- default badges end -->
 
-# DevExpress Chat for .NET MAUI
+# Use DevExpress .NET MAUI Components to Build a Chat View
 
-This example demonstrates a Chart control that allows users to send and receive massages.
+This example uses DevExpress .NET MAUI Components to display a chat view with sender and receiver messages, suggested quick replies, and response input controls.
 
 <img width="40%" alt="DevExpress Chat for .NET MAUI" src="Images/app-preview.png">
 
@@ -20,19 +20,42 @@ This example demonstrates a Chart control that allows users to send and receive 
 * [DXButton](https://docs.devexpress.devx/MAUI/DevExpress.Maui.Core.DXButton): [Command](https://docs.devexpress.com/MAUI/DevExpress.Maui.Core.DXButtonBase.Command), [Icon](https://docs.devexpress.devx/MAUI/DevExpress.Maui.Core.DXContentPresenter.Icon)
 
 ## Implementation Details
-
-1. Use the `DXCollectionView` control to display messages and group them by **DateRange**:
+1. Use a `SafeKeyboardAreaView` as the root for the view layout. This way, the device keyboard will not overlap the message view when it appears.
 
     ```xaml
-    <dxcv:DXCollectionView ... 
-        x:Name="chatSurface">
-        <dxcv:DXCollectionView.GroupDescription>
-            <dxcv:GroupDescription ... 
-                GroupInterval="DateRange" />
-        </dxcv:DXCollectionView.GroupDescription>
-    </dxcv:DXCollectionView>
+    <dx:SafeKeyboardAreaView> 
+        ... 
+    </dx:SafeKeyboardAreaView>
     ```
+1. Use the `DXCollectionView` control to display messages. Specify the data source and item templates (use different templates for sender and receiver). Groups items using a built-in algorithm that uses date/time ranges ("Today", "Yesterday", "Last Week", and so on). Specify a template for group headers. 
 
+    ```xaml
+        <dxcv:DXCollectionView
+        ItemsSource="{Binding Messages}"
+        ItemTemplate="{local:MessageTemplateSelector SenderTemplate=..., RecipientTemplate=...}"
+        GroupHeaderTemplate="{StaticResource dayGroupTemplate}"
+        ...
+        >
+            <dxcv:DXCollectionView.GroupDescription>
+                <dxcv:GroupDescription FieldName="SentAt" GroupInterval="DateRange" />
+            </dxcv:DXCollectionView.GroupDescription>
+        </dxcv:DXCollectionView>
+    ```
+2. Use `DXContentPresenter` components to define templates for sender and receiver messages. 
+
+    ```xaml
+        <ContentPage.Resources>
+                <DataTemplate x:Key="senderMessageTemplate"  x:DataType="{x:Type local:Message}">
+                    <dx:DXContentPresenter ... >
+                    </dx:DXContentPresenter>
+                </DataTemplate>
+                <DataTemplate x:Key="recipientMessageTemplate" x:DataType="{x:Type local:Message}">
+                    <dx:DXContentPresenter ... >
+                    </dx:DXContentPresenter>
+                </DataTemplate>
+                ...
+        </ContentPage.Resources>
+    ```
 2. Call the [`DXCollectionView.ScrollTo()`](https://docs.devexpress.devx/MAUI/DevExpress.Maui.CollectionView.DXCollectionView.ScrollTo(System.Int32)) method to scroll the view to the last message:
 
     ```csharp
